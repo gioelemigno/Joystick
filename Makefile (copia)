@@ -20,7 +20,7 @@ main.o: ../src/main.cpp test.o
 	avr-g++ $(FLAGS_COMPILE_MAIN) $(DEFINE_FLAGS) $(LIBS) ../src/main.cpp -o main.o
 	
 test.o:
-	avr-g++ -c -mmcu=atmega32u4 -DF_CPU=16000000L -Os $(LIBS) ../src/test.cpp -o test.o
+	avr-g++ -c -mmcu=atmega32u4 -DF_CPU=16000000L -Os $(DEFINE_FLAGS) $(LIBS) ../src/test.cpp -o test.o
 	
 .phony: clean
 
