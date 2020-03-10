@@ -2,7 +2,10 @@ CC=
 BUILD_PATH=./build
 LIB_PATH=./lib
 
-OBJ=test.o
+OBJ=Joystick.o
+
+
+############################################################################
 _OBJ=$(patsubst %.o, $(BUILD_PATH)/%.o, $(OBJ))
 
 INCLUDE_PATH_OBJ=$(patsubst %.o, -I$(LIB_PATH)/%/src, $(OBJ))
@@ -32,7 +35,7 @@ $(BUILD_PATH)/main.elf: $(_OBJ) $(BUILD_PATH)/main.o
 $(BUILD_PATH)/main.o: ./src/main.cpp 
 	avr-g++ $(FLAGS_COMPILE_MAIN) $(DEFINE_FLAGS) $(LIBS) $< -o $@
 	
-$(BUILD_PATH)/test.o: ./lib/test/src/test.cpp ./lib/test/src/test.h
+$(BUILD_PATH)/Joystick.o: ./lib/Joystick/src/Joystick.cpp ./lib/Joystick/src/Joystick.h
 	avr-g++ -c -mmcu=atmega32u4 -DF_CPU=16000000L -Os $(DEFINE_FLAGS) $(LIBS) $< -o $@
 
 .phony: clean
