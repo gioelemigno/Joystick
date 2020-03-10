@@ -42,10 +42,10 @@ clean:
 
 .phony: upload
 
-upload: main.elf
+upload: $(BUILD_PATH)/main.elf
 	#avr-objcopy -O ihex -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0 main.elf main.eep
 	#avr-objcopy -O ihex -R .eeprom main.elf main.hex
-	avr-objcopy -O ihex -R .eeprom main.elf main.hex
+	avr-objcopy -O ihex -R .eeprom $< $(BUILD_PATH)/main.hex
 	#avrdude -Cavrdude.conf -v -patmega32u4 -cusbasp -Pusb -U flash:w:main.hex:i
-	$(AVRDUDE) $(AVRDUDE_FLAGS) -U flash:w:main.hex:i 
+	$(AVRDUDE) $(AVRDUDE_FLAGS) -U flash:w:$(BUILD_PATH)/main.hex:i 
 
