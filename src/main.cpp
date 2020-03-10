@@ -6,7 +6,7 @@
 
 Joystick joystick;
 
-void setup() { // initialize the buttons' inputs:
+void setup() { 
   joystick.begin(2, A0, A1);
   Serial.begin(9600);
 }
