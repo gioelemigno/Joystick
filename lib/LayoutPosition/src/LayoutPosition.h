@@ -3,18 +3,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-/*
-typedef enum id_position{
-    id_position_up=1,
-    id_position_down,
-    id_position_right,
-    id_position_left,
-    id_position_rest,
-    id_position_unkonwn,
-    id_position_rest_press_button
-}id_position_t;
-*/
-
+#include "Arduino.h"
 typedef struct point{
   uint16_t x;
   uint16_t y;
@@ -39,6 +28,7 @@ typedef struct point{
   max.x=center.x+OFFSET
   max.y=center.y+OFFSET
 *******************************************************************************/
+/*
 typedef struct position{
   point_t center;
   point_t min;
@@ -47,6 +37,34 @@ typedef struct position{
   bool button_pressed;
   const char* name;
 }position_t;
+*/
+class Position{
+  public:
+    //point_t center;
+    point_t min;
+    point_t max;
+    uint16_t ID;
+    bool button_pressed;
+    const char* name;
+
+    //each type of position has own calibration method
+    //position depends on center(rest position of joystick) and limit of adc (min and max)
+    virtual void calibration(point_t abs_minADC_point, point_t abs_maxADC_point, point_t abs_centerADC_point){
+    while(1){
+      Serial.println("ERRORE \n");
+      delay(1000);
+      }
+      return;
+      
+    }
+    
+    void init(const char* _name, bool _button_pressed, uint16_t _ID){
+      this->name=_name;
+      this->button_pressed=_button_pressed;
+      this->ID=_ID;
+    }
+
+};
 /*********************************************************************************/
 
 
@@ -62,35 +80,34 @@ typedef struct position{
           max_coordinate   *                        V Y
  *********************************************************************************/
 typedef struct _position_array{
-    position_t* position;
+    Position** position;
     uint16_t size;
 }position_array_t;
 
 class LayoutPosition{
    // private:
     public:
-        static point_t rest_coordinate;
-        static point_t max_coordinate;
-        static point_t min_coordinate;
+        static point_t abs_minADC_point;
+        static point_t abs_maxADC_point;
+        static point_t abs_centerADC_point;
 
-        position_array_t custom_position;
+        static point_t abs_unknown_point;
+        
+        position_array_t position;
 
     //public:
         LayoutPosition();
 
-        uint16_t offset;
-
         enum id_pos_default {id_pos_rest=0, id_pos_rest_buttonPressed, id_pos_unknown};
 
         //add enum in inherited class
-        //position_array_t pos_custom;
-        void calibration(uint16_t rest_coordinate_x, uint16_t rest_coordinate_y,
-                            uint16_t max_coordinate_x, uint16_t max_coordinate_y, 
-                            uint16_t min_coordinate_x, uint16_t min_coordinate_y, 
-                            uint16_t offset);
+
+        void calibration(point_t abs_minADC_point, point_t abs_maxADC_point, point_t abs_centerADC_point);
         
-        position_t* getPosition(uint16_t x, uint16_t y, bool button_pressed);
-        void setupDefaultPosition();
+        Position* getPosition(uint16_t x, uint16_t y, bool button_pressed);
+
+        void printPosition(Position* pos);
+    void printAllPosition();
 
 };
 

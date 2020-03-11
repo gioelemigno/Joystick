@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-
+#include "Arduino.h"
 //ADC
 #define MAX  1023
 #define MIN   0
@@ -12,56 +12,249 @@
 
 #define SIZE_DEFAULT_POSITION   3
 
-#define UNKONWN_COORDINATE_X    MAX+50
-#define UNKONWN_COORDINATE_Y    MAX+50
+#define UNKNOWN_OVERLOAD 2
+#define UNKONWN_COORDINATE_X    MAX+UNKNOWN_OVERLOAD
+#define UNKONWN_COORDINATE_Y    MAX+UNKNOWN_OVERLOAD
 
-static inline void setupPosition(position_array_t* position_to_set, uint16_t id, 
-                            uint16_t center_x, uint16_t center_y, 
-                            bool button_pressed, const char* name);
+#define SIZE_EDGE_REST_POS 40
 
-point_t LayoutPosition::rest_coordinate = {.x=MIDDLE, .y=MIDDLE};
-point_t LayoutPosition::max_coordinate = {.x=MAX, .y=MAX};
-point_t LayoutPosition::min_coordinate = {.x=MIN, .y=MIN};
+point_t LayoutPosition::abs_centerADC_point = {.x=MIDDLE, .y=MIDDLE};
+point_t LayoutPosition::abs_maxADC_point = {.x=MAX, .y=MAX};
+point_t LayoutPosition::abs_minADC_point = {.x=MIN, .y=MIN};
+point_t LayoutPosition::abs_unknown_point = {.x=UNKONWN_COORDINATE_X, .y=UNKONWN_COORDINATE_Y};
 
-position_t default_position_array[SIZE_DEFAULT_POSITION];
+static inline void printPoint(point_t p){
+  Serial.print(" (");
+  Serial.print(p.x);
+  Serial.print(", ");
+  Serial.print(p.y);
+  Serial.print(") ");
+}
+class Position_rest: public Position{
+    private:
+        uint8_t sideEdge;
+    public:
+        void setSideEdge(uint8_t size_side_edge){this->sideEdge=size_side_edge;}
+        
+        Position_rest(){
+            this->sideEdge=SIZE_EDGE_REST_POS;
+            this->init("Rest", false, LayoutPosition::id_pos_rest);
+        }
+        virtual void calibration(point_t abs_minADC_point, point_t abs_maxADC_point, point_t abs_centerADC_point)override{
+           // while(1){
+             //   Serial.println("ok");
+            //    delay(1000);
+           // }
+            uint16_t half_edge = (uint16_t) (this->sideEdge / 2);
 
-//position_array_t LayoutPosition::custom_position = {.position=default_position_array,
- //                                                           .size=SIZE_DEFAULT_POSITION};
+            uint16_t x = abs_centerADC_point.x - half_edge;
+            uint16_t y = abs_centerADC_point.y - half_edge;
+            this->min.x= (x >= abs_minADC_point.x)? x : abs_minADC_point.x; 
+            this->min.y= (y >= abs_minADC_point.y)? y : abs_minADC_point.y; 
+
+            x=abs_centerADC_point.x + half_edge;
+            y=abs_centerADC_point.y + half_edge;
+            this->max.x=(x <= abs_maxADC_point.x)? x : abs_maxADC_point.x;
+            this->max.y=(y <= abs_maxADC_point.y)? y : abs_maxADC_point.y;
+
+        }
+
+        /**********************
+                     _______|||_______
+                    |                 |
+                    |                 |
+                    |       +++       |
+                    |       +++       |
+                    |       +++       |
+                    |                 |
+                    |_________________|
+             
+        **********************/
+};
+
+class Position_rest_buttonPressed: public Position{
+    private:
+        uint8_t sideEdge;
+    public:
+        void setSideEdge(uint8_t size_side_edge){this->sideEdge=size_side_edge;}
+        
+        Position_rest_buttonPressed(){
+            this->sideEdge=SIZE_EDGE_REST_POS;
+            this->init("Rest Button Pressed", true, LayoutPosition::id_pos_rest_buttonPressed);
+        }
+
+        virtual void calibration(point_t abs_minADC_point, point_t abs_maxADC_point, point_t abs_centerADC_point)override{
+            uint16_t half_edge = (uint16_t) (this->sideEdge / 2);
+
+            uint16_t x = abs_centerADC_point.x - half_edge;
+            uint16_t y = abs_centerADC_point.y - half_edge;
+            this->min.x= (x >= abs_minADC_point.x)? x : abs_minADC_point.x; 
+            this->min.y= (y >= abs_minADC_point.y)? y : abs_minADC_point.y; 
+
+            x=abs_centerADC_point.x + half_edge;
+            y=abs_centerADC_point.y + half_edge;
+            this->max.x=(x <= abs_maxADC_point.x)? x : abs_maxADC_point.x;
+            this->max.y=(y <= abs_maxADC_point.y)? y : abs_maxADC_point.y;
+
+        }
+
+        /**********************
+                     _______|||_______
+                    |                 |
+                    |                 |
+                    |       +++       |
+                    |       +++       |
+                    |       +++       |
+                    |                 |
+                    |_________________|
+             
+        **********************/
+};
+
+class Position_unknown: public Position{
+    public:
+        Position_unknown(){
+            this->init("Unknown", false, LayoutPosition::id_pos_unknown);
+        }
+
+        virtual void calibration(point_t abs_minADC_point, point_t abs_maxADC_point, point_t abs_centerADC_point)override{
+            //unreachable point
+            this->min.x=abs_maxADC_point.x+1;
+            this->min.y=abs_maxADC_point.y+1;
+
+            this->max.x=abs_maxADC_point.x+2;
+            this->max.y=abs_maxADC_point.y+2;
 
 
-void LayoutPosition::calibration(uint16_t rest_coordinate_x, uint16_t rest_coordinate_y,
-                            uint16_t max_coordinate_x, uint16_t max_coordinate_y, 
-                            uint16_t min_coordinate_x, uint16_t min_coordinate_y,
-                            uint16_t offset){
-    
+            /**********************
+                     _______
+                    |  |||  |
+                    |   o   |
+                    |_______|
+                ++++
+                +  +
+                ++++                
+             **********************/
+        }
+};
+
+Position_rest position_rest;
+Position_rest_buttonPressed position_rest_buttonPressed;
+Position_unknown position_unknown;
+
+Position* default_position_array[SIZE_DEFAULT_POSITION]{
+    [LayoutPosition::id_pos_rest] = &position_rest,
+    [LayoutPosition::id_pos_rest_buttonPressed] = &position_rest_buttonPressed,
+    [LayoutPosition::id_pos_unknown] = &position_unknown
+};
+
+
+
+
+void LayoutPosition::calibration(point_t abs_minADC_point, point_t abs_maxADC_point, point_t abs_centerADC_point){
+    this->abs_minADC_point=abs_minADC_point;
+    this->abs_maxADC_point=abs_maxADC_point;
+    this->abs_centerADC_point=abs_centerADC_point;
+
+    this->abs_unknown_point.x=abs_maxADC_point.x +UNKNOWN_OVERLOAD;
+    this->abs_unknown_point.y=abs_maxADC_point.y + UNKNOWN_OVERLOAD;
+    for(uint16_t i=0; i<this->position.size; i++){
+        this->position.position[i]->calibration(abs_minADC_point, abs_maxADC_point, abs_centerADC_point);
+        //point_t min = {.x=MIN, .y=MIN};
+        //point_t max = {.x=MAX, .y=MAX};
+        //point_t mid = {.x=MIDDLE, .y=MIDDLE};
+
+        //this->position.position[i]->calibration(min, max, mid);
+    }
     return;
 }
 
 LayoutPosition::LayoutPosition(){
-    this->custom_position.position=default_position_array;
-    this->custom_position.size=SIZE_DEFAULT_POSITION;
+    this->position.position=default_position_array;
+    this->position.size=SIZE_DEFAULT_POSITION;
+
+    this->calibration(this->abs_minADC_point, this->abs_maxADC_point, this->abs_centerADC_point);
 }
 
-void LayoutPosition::setupDefaultPosition(){
-    setupPosition(&(this->custom_position), this->id_pos_rest, rest_coordinate.x, rest_coordinate.y, false, "Rest");
-    setupPosition(&(this->custom_position), this->id_pos_rest_buttonPressed, rest_coordinate.x, rest_coordinate.y, true, "Rest Button Pressed");
-    setupPosition(&(this->custom_position), this->id_pos_unknown, UNKONWN_COORDINATE_X, UNKONWN_COORDINATE_Y, false, "Unknown");
+static void static_printPosition(Position* pos){
+  Serial.println("***********************************");
+  Serial.print("Name:\t");
+  Serial.println(pos->name);
+
+  Serial.print("Min:\t");
+  printPoint(pos->min);
+  Serial.print("\n");
+
+  Serial.print("Max:\t");
+  printPoint(pos->max);
+  Serial.print("\n");
+
+  Serial.print("ID:\t");
+  Serial.println(pos->ID);
+
 }
 
-position_t* LayoutPosition::getPosition(uint16_t x, uint16_t y, bool button_pressed){
-    return NULL;
+//#define DEBUG
+static bool pointInsidePosition(point_t* point, Position* position){
+  #ifdef DEBUG
+        Serial.println("++++++++++++++++++++++++++");
+
+  Serial.println("********************");
+  Serial.print("Coordinate:\t");
+  printPoint(*point);
+  Serial.print("\n");
+  Serial.println("Compare with:\n");
+
+    static_printPosition(position);
+          Serial.println("++++++++++++++++++++++++++");
+
+  Serial.println("");
+  #endif /*DEBUG*/
+    if(point->x >= position->min.x && point->x <= position->max.x
+      && point->y >= position->min.y && point->y <= position->max.y){
+
+      return true;
+    }
+    else return false;
 }
 
-static inline void setupPosition(position_array_t* position_to_set, uint16_t id, 
-                            uint16_t center_x, uint16_t center_y, 
-                            bool button_pressed, const char* name){
+Position* LayoutPosition::getPosition(uint16_t x, uint16_t y, bool button_pressed){
 
-    position_to_set->position[id].ID=id;
+    point_t point = {.x=x, .y=y};
+    for(uint16_t i = 0; i< this->position.size; i++){
 
-    position_to_set->position[id].center.x=center_x;
-    position_to_set->position[id].center.y=center_y;
+        if(this->position.position[i]->button_pressed != button_pressed) continue;
 
-    position_to_set->position[id].button_pressed=button_pressed;
+        if(pointInsidePosition(&point, this->position.position[i])){
+            return this->position.position[i];
+        }
+    }
 
-    position_to_set->position[id].name=name;
+    return this->position.position[LayoutPosition::id_pos_unknown];
+}
+
+
+
+void LayoutPosition::printPosition(Position* pos){
+  Serial.println("***********************************");
+  Serial.print("Name:\t");
+  Serial.println(pos->name);
+
+  Serial.print("Min:\t");
+  printPoint(pos->min);
+  Serial.print("\n");
+
+  Serial.print("Max:\t");
+  printPoint(pos->max);
+  Serial.print("\n");
+
+  Serial.print("ID:\t");
+  Serial.println(pos->ID);
+
+}
+
+void LayoutPosition::printAllPosition(){
+    for(uint16_t i=0; i< this->position.size; i++){
+        printPosition(this->position.position[i]);
+    }
 }
