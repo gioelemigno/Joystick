@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include "Arduino.h"
+
 typedef struct point{
   uint16_t x;
   uint16_t y;
@@ -28,16 +29,6 @@ typedef struct point{
   max.x=center.x+OFFSET
   max.y=center.y+OFFSET
 *******************************************************************************/
-/*
-typedef struct position{
-  point_t center;
-  point_t min;
-  point_t max;
-  uint16_t ID;
-  bool button_pressed;
-  const char* name;
-}position_t;
-*/
 class Position{
   public:
     //point_t center;
@@ -84,6 +75,78 @@ typedef struct _position_array{
     uint16_t size;
 }position_array_t;
 
+
+
+
+/***********************************************************************
+
+
+              UP_LEFT (UL)     | | |     UP_RIGHT (UR)
+                      |---------------------|
+                      |      * * * * *      |
+                      |         ___         |
+                      |       /     \       |   
+                      |      |       |      |
+                      |       \ ___ /       |
+                      |                     |
+                      |---------------------|
+                  DOWN_LEFT (DL)      DOWN_RIGHT(DR)
+                                
+Orietation:
+_______________________________________________________________________
+    0°
+            (UL)=(MAX,0)       | | |       (UR) = (0,0)
+                  <---|---------------------|
+                      |      * * * * *      |
+                      |         ___         |
+                      |       /     \       |   
+                      |      |       |      |
+                      |       \ ___ /       |
+                      |                     |
+                      |---------------------|
+                (DL)=(MAX, MAX)             |(DR)=(0,MAX)
+                                            V
+_______________________________________________________________________
+  90°
+               (UL)=(0,0)                  (UR) = (0,MAX)
+                      |---------------------|--->
+                      |                     |
+                  __  | *       ___         |
+                  __  | *     /     \       |   
+                  __  | *    |       |      |
+                      | *     \ ___ /       |
+                      |                     |
+                      |---------------------|
+                      |
+                      V
+                (DL)=(0, MAX)         (DR)=(MAX,MAX)
+_______________________________________________________________________
+  180°
+                      
+         (UL)=(0,MAX) ^                    (UR) = (MAX,MAX)
+                      |---------------------|
+                      |                     |
+                      |         ___         |
+                      |       /     \       |   
+                      |      |       |      |
+                      |       \ ___ /       |
+                      |      * * * * *      |
+                      |---------------------|--->
+            (DL)=(0,0)         | | |      (DR)=(MAX,0)    
+_______________________________________________________________________
+270°
+          (UL)=(MAX, MAX)              (UR) = (0,MAX)
+                                            ^
+                      |---------------------|
+                      |                     |
+                      |         ___      *  |__
+                      |       /     \    *  |__   
+                      |      |       |   *  |__
+                      |       \ ___ /    *  |
+                      |                     |
+                   <--|---------------------|
+                (DL)=(0, MAX)           (DR)=(0,0)
+***********************************************************************/
 class LayoutPosition{
    // private:
     public:
@@ -92,7 +155,10 @@ class LayoutPosition{
         static point_t abs_centerADC_point;
 
         static point_t abs_unknown_point;
-        
+
+        enum orientation_t {or_0_deg, or_90_deg, or_180_deg, or_270_deg};
+
+        orientation_t orientation;        
         position_array_t position;
 
     //public:
@@ -107,7 +173,10 @@ class LayoutPosition{
         Position* getPosition(uint16_t x, uint16_t y, bool button_pressed);
 
         void printPosition(Position* pos);
-    void printAllPosition();
-
+        void printAllPosition();
+        virtual void setOrientation(orientation_t orient){    
+          this->orientation=orient;
+          return;
+        }
 };
 

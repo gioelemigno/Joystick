@@ -160,11 +160,6 @@ void LayoutPosition::calibration(point_t abs_minADC_point, point_t abs_maxADC_po
     this->abs_unknown_point.y=abs_maxADC_point.y + UNKNOWN_OVERLOAD;
     for(uint16_t i=0; i<this->position.size; i++){
         this->position.position[i]->calibration(abs_minADC_point, abs_maxADC_point, abs_centerADC_point);
-        //point_t min = {.x=MIN, .y=MIN};
-        //point_t max = {.x=MAX, .y=MAX};
-        //point_t mid = {.x=MIDDLE, .y=MIDDLE};
-
-        //this->position.position[i]->calibration(min, max, mid);
     }
     return;
 }
@@ -172,8 +167,9 @@ void LayoutPosition::calibration(point_t abs_minADC_point, point_t abs_maxADC_po
 LayoutPosition::LayoutPosition(){
     this->position.position=default_position_array;
     this->position.size=SIZE_DEFAULT_POSITION;
-
+    this->setOrientation(LayoutPosition::or_0_deg);
     this->calibration(this->abs_minADC_point, this->abs_maxADC_point, this->abs_centerADC_point);
+
 }
 
 static void static_printPosition(Position* pos){
