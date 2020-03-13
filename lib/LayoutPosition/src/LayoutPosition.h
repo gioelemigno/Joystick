@@ -10,6 +10,7 @@ typedef struct point{
   uint16_t y;
 }point_t;
 
+#define SIZE_DEFAULT_POSITION   3
 
 /******************************************************************************
                           X <-----------------------(min.x, min.y)
@@ -155,6 +156,8 @@ class LayoutPosition{
         static point_t abs_centerADC_point;
 
         static point_t abs_unknown_point;
+
+        static const uint16_t n_pos_default = SIZE_DEFAULT_POSITION;
 
         enum orientation_t {or_0_deg, or_90_deg, or_180_deg, or_270_deg};
 

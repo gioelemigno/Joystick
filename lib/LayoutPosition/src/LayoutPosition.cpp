@@ -10,7 +10,6 @@
 
 #define OFFSET  20
 
-#define SIZE_DEFAULT_POSITION   3
 
 #define UNKNOWN_OVERLOAD 2
 #define UNKONWN_COORDINATE_X    MAX+UNKNOWN_OVERLOAD
@@ -22,6 +21,7 @@ point_t LayoutPosition::abs_centerADC_point = {.x=MIDDLE, .y=MIDDLE};
 point_t LayoutPosition::abs_maxADC_point = {.x=MAX, .y=MAX};
 point_t LayoutPosition::abs_minADC_point = {.x=MIN, .y=MIN};
 point_t LayoutPosition::abs_unknown_point = {.x=UNKONWN_COORDINATE_X, .y=UNKONWN_COORDINATE_Y};
+//const uint16_t LayoutPosition::n_pos_default = SIZE_DEFAULT_POSITION;
 
 static inline void printPoint(point_t p){
   Serial.print(" (");
@@ -165,6 +165,7 @@ void LayoutPosition::calibration(point_t abs_minADC_point, point_t abs_maxADC_po
 }
 
 LayoutPosition::LayoutPosition(){
+    //this->n_pos_default=SIZE_DEFAULT_POSITION;
     this->position.position=default_position_array;
     this->position.size=SIZE_DEFAULT_POSITION;
     this->setOrientation(LayoutPosition::or_0_deg);

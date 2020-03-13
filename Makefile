@@ -2,7 +2,7 @@ CC=
 BUILD_PATH=./build
 LIB_PATH=./lib
 
-OBJ=Joystick.o LayoutPosition.o
+OBJ=Joystick.o LayoutPosition.o CustomLayoutPosition.o
 
 
 ############################################################################
@@ -40,6 +40,10 @@ $(BUILD_PATH)/Joystick.o: ./lib/Joystick/src/Joystick.cpp ./lib/Joystick/src/Joy
 
 $(BUILD_PATH)/LayoutPosition.o: ./lib/LayoutPosition/src/LayoutPosition.cpp ./lib/LayoutPosition/src/LayoutPosition.h
 	avr-g++ -c -mmcu=atmega32u4 -DF_CPU=16000000L -Os $(DEFINE_FLAGS) $(LIBS) $< -o $@
+
+$(BUILD_PATH)/CustomLayoutPosition.o: ./lib/CustomLayoutPosition/src/CustomLayoutPosition.cpp ./lib/CustomLayoutPosition/src/CustomLayoutPosition.h
+	avr-g++ -c -mmcu=atmega32u4 -DF_CPU=16000000L -Os $(DEFINE_FLAGS) $(LIBS) $< -o $@
+
 
 .phony: clean
 

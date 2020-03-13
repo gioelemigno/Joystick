@@ -16,4 +16,5 @@ build/main.o: src/main.cpp \
  lib/Arduino/arduino/avr/cores/arduino/../../libraries/HID/src/HID.h \
  lib/Arduino/arduino/avr/cores/arduino/PluggableUSB.h \
  lib/Arduino/libraries/Mouse/src/Mouse.h lib/Joystick/src/Joystick.h \
- lib/LayoutPosition/src/LayoutPosition.h
+ lib/LayoutPosition/src/LayoutPosition.h \
+ lib/CustomLayoutPosition/src/CustomLayoutPosition.h
