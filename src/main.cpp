@@ -9,6 +9,7 @@
 Joystick joystick;
 LayoutPosition layoutPosition;
 LayoutPosition_cross cross;
+LayoutPosition_star star;
 
 void setup() { 
   joystick.begin(2, A1, A0);
@@ -18,15 +19,20 @@ void setup() {
   Serial.println("wainting calibartion...");
     joystickStatus_t* status = joystick.readStatus();
   point_t middle = {.x=status->x, .y=status->y};
-  
-  cross.calibration(LayoutPosition::abs_minADC_point, LayoutPosition::abs_maxADC_point, middle);
+    star.calibration(LayoutPosition::abs_minADC_point, LayoutPosition::abs_maxADC_point, middle);
+
+//  cross.calibration(LayoutPosition::abs_minADC_point, LayoutPosition::abs_maxADC_point, middle);
 
   //layoutPosition.calibration(LayoutPosition::abs_minADC_point, LayoutPosition::abs_maxADC_point, middle);
 
-  cross.setOrientation(LayoutPosition_cross::or_270_deg);
+  star.setOrientation(LayoutPosition_cross::or_0_deg);
+
+  //cross.setOrientation(LayoutPosition_cross::or_0_deg);
   delay(5000);
   Serial.println("done");
-    cross.printAllPosition();
+//    cross.printAllPosition();
+        star.printAllPosition();
+
 
 }
 
@@ -38,9 +44,12 @@ void loop() {
   //Position* pos = layoutPosition.getPosition(status->x, status->y, status->button_pressed);
   //layoutPosition.printPosition(pos);
   
-  Position* pos = cross.getPosition(status->x, status->y, status->button_pressed);
-  cross.printPosition(pos);
+  //Position* pos = cross.getPosition(status->x, status->y, status->button_pressed);
+  //cross.printPosition(pos);
   
+    Position* pos = star.getPosition(status->x, status->y, status->button_pressed);
+  star.printPosition(pos);
+
   joystick.printStatus();
   Serial.println("...........................\n\n\n");
   delay(1000);
