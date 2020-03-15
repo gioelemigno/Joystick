@@ -2,15 +2,16 @@ CC=
 BUILD_PATH=./build
 LIB_PATH=./lib
 
-OBJ=Joystick.o LayoutPosition.o CustomLayoutPosition.o
-
+OBJ=Joystick.o LayoutPosition.o CustomLayoutPosition.o 
+#CustomMapping.o Handler.o Action.o
+#OBJ+= Controller.o
 
 ############################################################################
 _OBJ=$(patsubst %.o, $(BUILD_PATH)/%.o, $(OBJ))
 
 INCLUDE_PATH_OBJ=$(patsubst %.o, -I$(LIB_PATH)/%/src, $(OBJ))
 
-DEFINE_FLAGS=
+DEFINE_FLAGS= 
 
 
 ARDUINO_LIB=./lib/Arduino/core.a ./lib/Arduino/HIDKeyboardMouseCore.a
@@ -43,6 +44,18 @@ $(BUILD_PATH)/LayoutPosition.o: ./lib/LayoutPosition/src/LayoutPosition.cpp ./li
 
 $(BUILD_PATH)/CustomLayoutPosition.o: ./lib/CustomLayoutPosition/src/CustomLayoutPosition.cpp ./lib/CustomLayoutPosition/src/CustomLayoutPosition.h
 	avr-g++ -c -mmcu=atmega32u4 -DF_CPU=16000000L -Os $(DEFINE_FLAGS) $(LIBS) $< -o $@
+
+#$(BUILD_PATH)/CustomMapping.o: ./lib/CustomMapping/src/CustomMapping.cpp ./lib/CustomMapping/src/CustomMapping.h
+#	avr-g++ -c -mmcu=atmega32u4 -DF_CPU=16000000L -Os $(DEFINE_FLAGS) $(LIBS) $< -o $@
+
+#$(BUILD_PATH)/Handler.o: ./lib/Handler/src/Handler.cpp ./lib/Handler/src/Handler.h
+#	avr-g++ -c -mmcu=atmega32u4 -DF_CPU=16000000L -Os $(DEFINE_FLAGS) $(LIBS) $< -o $@
+
+#$(BUILD_PATH)/Action.o: ./lib/Action/src/Action.cpp ./lib/Action/src/Action.h
+#	avr-g++ -c -mmcu=atmega32u4 -DF_CPU=16000000L -Os $(DEFINE_FLAGS) $(LIBS) $< -o $@
+
+#$(BUILD_PATH)/Controller.o: ./lib/Controller/src/Controller.cpp ./lib/Controller/src/Controller.h
+#	avr-g++ -c -mmcu=atmega32u4 -DF_CPU=16000000L -Os $(DEFINE_FLAGS) $(LIBS) $< -o $@
 
 
 .phony: clean

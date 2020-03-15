@@ -174,14 +174,14 @@ void LayoutPosition_cross::setOrientation(orientation_t orient){
  * 
  * ***********************************************************************************/
 
-#define L1 500
-#define L2 L1
+#define L1_CROSS 500
+#define L2_CROSS L1_CROSS
 
 //const uint16_t LayoutPosition_cross::n_pos_custom = N_CUSTOM_POS;
 /***************************************************************************************
-                                A                L1
+                                A                L1_CROSS
                      <------------------         ___ 
-                    H    |__|  |__| |__| E       |__| L2
+                    H    |__|  |__| |__| E       |__| L2_CROSS
                          |             |
                          |__         __|
                     D    |__|       |__|  B
@@ -194,14 +194,14 @@ void LayoutPosition_cross::setOrientation(orientation_t orient){
  **************************************************************************************/
 class Position_A_edge :public Position{
     virtual void calibration(point_t abs_minADC_point, point_t abs_maxADC_point, point_t abs_centerADC_point){
-        int x = abs_centerADC_point.x - (L1/2);
+        int x = abs_centerADC_point.x - (L1_CROSS/2);
         this->min.x = (x >= abs_minADC_point.x)? x:abs_minADC_point.x;
         int y = abs_minADC_point.y;
         this->min.y=y;
         
-        x=abs_centerADC_point.x +(L1/2);
+        x=abs_centerADC_point.x +(L1_CROSS/2);
         this->max.x = (x <= abs_maxADC_point.x)? x: abs_maxADC_point.x;
-        y = abs_minADC_point.y + L2;
+        y = abs_minADC_point.y + L2_CROSS;
         this->max.y = (y<= abs_maxADC_point.y)?y:abs_maxADC_point.y;
     }
 };
@@ -210,24 +210,24 @@ class Position_B_edge :public Position{
     virtual void calibration(point_t abs_minADC_point, point_t abs_maxADC_point, point_t abs_centerADC_point){
         int x = abs_minADC_point.x;
         this->min.x = x;
-        int y = abs_centerADC_point.y - (L1/2);
+        int y = abs_centerADC_point.y - (L1_CROSS/2);
         this->min.y=(y>=abs_minADC_point.y)?y:abs_minADC_point.y;
         
-        x=abs_minADC_point.x + L2;
+        x=abs_minADC_point.x + L2_CROSS;
         this->max.x = (x <= abs_maxADC_point.x)? x: abs_maxADC_point.x;
-        y = abs_centerADC_point.y + (L1/2);
+        y = abs_centerADC_point.y + (L1_CROSS/2);
         this->max.y = (y<= abs_maxADC_point.y)?y:abs_maxADC_point.y;
     }
 };
 
 class Position_C_edge :public Position{
     virtual void calibration(point_t abs_minADC_point, point_t abs_maxADC_point, point_t abs_centerADC_point){
-        int x = abs_centerADC_point.x - (L1/2);
+        int x = abs_centerADC_point.x - (L1_CROSS/2);
         this->min.x = (x >= abs_minADC_point.x)? x:abs_minADC_point.x;
-        int y = abs_maxADC_point.y - L2;
+        int y = abs_maxADC_point.y - L2_CROSS;
         this->min.y=(y>= abs_minADC_point.y)?y:abs_minADC_point.y;
         
-        x=abs_centerADC_point.x +(L1/2);
+        x=abs_centerADC_point.x +(L1_CROSS/2);
         this->max.x = (x <= abs_maxADC_point.x)? x: abs_maxADC_point.x;
         y = abs_maxADC_point.y;
         this->max.y=y;
@@ -236,14 +236,14 @@ class Position_C_edge :public Position{
 
 class Position_D_edge :public Position{
     virtual void calibration(point_t abs_minADC_point, point_t abs_maxADC_point, point_t abs_centerADC_point){
-        int x = abs_maxADC_point.x - L2;
+        int x = abs_maxADC_point.x - L2_CROSS;
         this->min.x = (x>= abs_minADC_point.x)?x:abs_minADC_point.x;
-        int y = abs_centerADC_point.y - (L1/2);
+        int y = abs_centerADC_point.y - (L1_CROSS/2);
         this->min.y=(y>=abs_minADC_point.y)?y:abs_minADC_point.y;
         
         x=abs_maxADC_point.x;
         this->max.x = x;
-        y = abs_centerADC_point.y + (L1/2);
+        y = abs_centerADC_point.y + (L1_CROSS/2);
         this->max.y = (y<= abs_maxADC_point.y)?y:abs_maxADC_point.y;
     }
 };
@@ -256,9 +256,9 @@ class Position_E_edge :public Position{
         int y = abs_minADC_point.y;
         this->min.y=y;
         
-        x=abs_minADC_point.x+L1;
+        x=abs_minADC_point.x+L1_CROSS;
         this->max.x = (x <= abs_maxADC_point.x)? x: abs_maxADC_point.x;
-        y = abs_minADC_point.y + L2;
+        y = abs_minADC_point.y + L2_CROSS;
         this->max.y = (y<= abs_maxADC_point.y)?y:abs_maxADC_point.y;
     }
 };
@@ -267,10 +267,10 @@ class Position_F_edge :public Position{
     virtual void calibration(point_t abs_minADC_point, point_t abs_maxADC_point, point_t abs_centerADC_point){
         int x = abs_minADC_point.x;
         this->min.x = x;
-        int y = abs_maxADC_point.y - L2;
+        int y = abs_maxADC_point.y - L2_CROSS;
         this->min.y=(y>=abs_minADC_point.y)?y:abs_minADC_point.y;
         
-        x=abs_minADC_point.x + L1;
+        x=abs_minADC_point.x + L1_CROSS;
         this->max.x = (x <= abs_maxADC_point.x)? x: abs_maxADC_point.x;
         y = abs_maxADC_point.y;
         this->max.y = y;
@@ -280,9 +280,9 @@ class Position_F_edge :public Position{
 
 class Position_G_edge :public Position{
     virtual void calibration(point_t abs_minADC_point, point_t abs_maxADC_point, point_t abs_centerADC_point){
-        int x = abs_maxADC_point.x-L1;
+        int x = abs_maxADC_point.x-L1_CROSS;
         this->min.x = (x>=abs_minADC_point.x)?x:abs_minADC_point.x;
-        int y = abs_maxADC_point.y - L2;
+        int y = abs_maxADC_point.y - L2_CROSS;
         this->min.y=(y>=abs_minADC_point.y)?y:abs_minADC_point.y;
         
         x=abs_maxADC_point.x;
@@ -294,14 +294,14 @@ class Position_G_edge :public Position{
 
 class Position_H_edge :public Position{
     virtual void calibration(point_t abs_minADC_point, point_t abs_maxADC_point, point_t abs_centerADC_point){
-        int x = abs_maxADC_point.x-L1;
+        int x = abs_maxADC_point.x-L1_CROSS;
         this->min.x = (x>=abs_minADC_point.x)?x:abs_minADC_point.x;
         int y = abs_minADC_point.y;
         this->min.y=y;
         
         x=abs_maxADC_point.x;
         this->max.x = x;
-        y = abs_minADC_point.y+L2;
+        y = abs_minADC_point.y+L2_CROSS;
         this->max.y = (y<=abs_minADC_point.y)?y:abs_minADC_point.y;
     }
 };
@@ -358,49 +358,82 @@ void LayoutPosition_star::setOrientation(orientation_t orient){
         break;
     
     case LayoutPosition::or_90_deg:
-        /*
-        A_pos.init("Left", false, this->id_pos_left);
-        this->position.position[LayoutPosition_cross::id_pos_left]=&A_pos;
+        
+        A_edge_pos.init("Left", false, this->id_pos_left);
+        this->position.position[LayoutPosition_cross::id_pos_left]=&A_edge_pos;
 
-        B_pos.init("Up", false, this->id_pos_up);
-        this->position.position[LayoutPosition_cross::id_pos_up]=&B_pos;
+        B_edge_pos.init("Up", false, this->id_pos_up);
+        this->position.position[LayoutPosition_cross::id_pos_up]=&B_edge_pos;
 
-        C_pos.init("Right", false, this->id_pos_right);
-        this->position.position[LayoutPosition_cross::id_pos_right]=&C_pos;
+        C_edge_pos.init("Right", false, this->id_pos_right);
+        this->position.position[LayoutPosition_cross::id_pos_right]=&C_edge_pos;
 
-        D_pos.init("Down", false, this->id_pos_down);
-        this->position.position[LayoutPosition_cross::id_pos_down]=&D_pos;
-        */
+        D_edge_pos.init("Down", false, this->id_pos_down);
+        this->position.position[LayoutPosition_cross::id_pos_down]=&D_edge_pos;
+        
+        E_edge_pos.init("Up left", false, this->id_pos_up_left);
+        this->position.position[LayoutPosition_star::id_pos_up_left]=&E_edge_pos;
+
+        F_edge_pos.init("Up right", false, this->id_pos_up_right);
+        this->position.position[LayoutPosition_star::id_pos_up_right]=&F_edge_pos;
+
+        G_edge_pos.init("Down right", false, this->id_pos_down_right);
+        this->position.position[LayoutPosition_star::id_pos_down_right]=&G_edge_pos;
+
+        H_edge_pos.init("Down left", false, this->id_pos_down_left);
+        this->position.position[LayoutPosition_star::id_pos_down_left]=&H_edge_pos;
         break;
 
     case LayoutPosition::or_180_deg:
-        /*A_pos.init("Down", false, this->id_pos_down);
-        this->position.position[LayoutPosition_cross::id_pos_down]=&A_pos;
+        A_edge_pos.init("Down", false, this->id_pos_down);
+        this->position.position[LayoutPosition_cross::id_pos_down]=&A_edge_pos;
 
-        B_pos.init("Left", false, this->id_pos_left);
-        this->position.position[LayoutPosition_cross::id_pos_left]=&B_pos;
+        B_edge_pos.init("Left", false, this->id_pos_left);
+        this->position.position[LayoutPosition_cross::id_pos_left]=&B_edge_pos;
 
-        C_pos.init("Up", false, this->id_pos_up);
-        this->position.position[LayoutPosition_cross::id_pos_up]=&C_pos;
+        C_edge_pos.init("Up", false, this->id_pos_up);
+        this->position.position[LayoutPosition_cross::id_pos_up]=&C_edge_pos;
 
-        D_pos.init("Right", false, this->id_pos_right);
-        this->position.position[LayoutPosition_cross::id_pos_right]=&D_pos;
-        */
+        D_edge_pos.init("Right", false, this->id_pos_right);
+        this->position.position[LayoutPosition_cross::id_pos_right]=&D_edge_pos;
+
+        E_edge_pos.init("Down left", false, this->id_pos_down_left);
+        this->position.position[LayoutPosition_star::id_pos_down_left]=&E_edge_pos;
+
+        F_edge_pos.init("Up left", false, this->id_pos_up_left);
+        this->position.position[LayoutPosition_star::id_pos_up_left]=&F_edge_pos;
+
+        G_edge_pos.init("Up right", false, this->id_pos_up_right);
+        this->position.position[LayoutPosition_star::id_pos_up_right]=&G_edge_pos;
+
+        H_edge_pos.init("Down right", false, this->id_pos_down_right);
+        this->position.position[LayoutPosition_star::id_pos_down_right]=&H_edge_pos;
         break;
     
     case LayoutPosition::or_270_deg:
-        /*A_pos.init("Right", false, this->id_pos_right);
-        this->position.position[LayoutPosition_cross::id_pos_right]=&A_pos;
+        A_edge_pos.init("Right", false, this->id_pos_right);
+        this->position.position[LayoutPosition_cross::id_pos_right]=&A_edge_pos;
 
-        B_pos.init("Down", false, this->id_pos_down);
-        this->position.position[LayoutPosition_cross::id_pos_down]=&B_pos;
+        B_edge_pos.init("Down", false, this->id_pos_down);
+        this->position.position[LayoutPosition_cross::id_pos_down]=&B_edge_pos;
 
-        C_pos.init("Left", false, this->id_pos_left);
-        this->position.position[LayoutPosition_cross::id_pos_left]=&C_pos;
+        C_edge_pos.init("Left", false, this->id_pos_left);
+        this->position.position[LayoutPosition_cross::id_pos_left]=&C_edge_pos;
 
-        D_pos.init("Up", false, this->id_pos_up);
-        this->position.position[LayoutPosition_cross::id_pos_up]=&D_pos;
-        */
+        D_edge_pos.init("Up", false, this->id_pos_up);
+        this->position.position[LayoutPosition_cross::id_pos_up]=&D_edge_pos;
+        
+        E_edge_pos.init("Down right", false, this->id_pos_down_right);
+        this->position.position[LayoutPosition_star::id_pos_down_right]=&E_edge_pos;
+
+        F_edge_pos.init("Down left", false, this->id_pos_down_left);
+        this->position.position[LayoutPosition_star::id_pos_down_left]=&F_edge_pos;
+
+        G_edge_pos.init("Up left", false, this->id_pos_up_left);
+        this->position.position[LayoutPosition_star::id_pos_up_left]=&G_edge_pos;
+
+        H_edge_pos.init("Up right", false, this->id_pos_up_right);
+        this->position.position[LayoutPosition_star::id_pos_up_right]=&H_edge_pos;
         break;
         
     default:

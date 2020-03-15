@@ -5,6 +5,8 @@
 #include "Joystick.h"
 #include "LayoutPosition.h"
 #include "CustomLayoutPosition.h"
+//#include "Controller.h"
+//#include "CustomMapping.h"
 
 Joystick joystick;
 LayoutPosition layoutPosition;
@@ -12,7 +14,7 @@ LayoutPosition_cross cross;
 LayoutPosition_star star;
 
 void setup() { 
-  joystick.begin(2, A1, A0);
+  //joystick.begin(2, A1, A0);
   Serial.begin(9600);
       delay(5000);
 
@@ -25,7 +27,7 @@ void setup() {
 
   //layoutPosition.calibration(LayoutPosition::abs_minADC_point, LayoutPosition::abs_maxADC_point, middle);
 
-  star.setOrientation(LayoutPosition_cross::or_0_deg);
+  star.setOrientation(LayoutPosition_cross::or_270_deg);
 
   //cross.setOrientation(LayoutPosition_cross::or_0_deg);
   delay(5000);
@@ -54,3 +56,19 @@ void loop() {
   Serial.println("...........................\n\n\n");
   delay(1000);
 }
+/*
+//Controller controller;
+void setup(){
+  Serial.begin(9600);
+  //controller.begin(2,A1,A0);
+  //controller.setHandler(0, GlobalCustomMapping.Mapping_F1F2F3F4);
+
+  delay(5000);
+  Serial.println("end setup..");
+  
+}
+
+void loop(){
+  //controller.run();
+}
+*/
